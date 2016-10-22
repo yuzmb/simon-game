@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html >
+  <head>
+    <meta charset="UTF-8">
+
+
+    <title>CodePen - Simon Game</title>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    
+    
+        <style>
+      * {
+  margin: 0;
+ 	 padding: 0;
+ 	 border: 0;
+  font-size: 100%;
+ 	 font: inherit;
+}
+body {
+  margin-top: 70px;
+}
+html{
+  background-image: url('http://cdn.backgroundhost.com/backgrounds/subtlepatterns/retina_wood.png');
+}
+.inline{
+  display: inline-block;
+}
+.color {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  background-color: grey;
+  border: 12px solid #333;
+}
+.pa {
+  margin-top: 4px;
+}
+.green {
+  border-top-left-radius: 100%;
+  background-color: #00a74a;
+}
+.red {
+  border-top-right-radius: 100%;
+  background-color: #9f0f17;
+}
+.yellow {
+  border-bottom-left-radius: 100%;
+  background-color: #cca707;
+}
+.blue {
+  border-bottom-right-radius: 100%;
+  background-color: #094a8f;
+}
+.pack {
+  width: 472px;
+  height: 472px;
+  border-radius: 100%;
+  position: relative;
+  text-align: center;
+  margin: auto;
+  background-color: #333;
+  top: 10%;
+  box-shadow: 0px 0px 12px #222;
+}
+.pack-in {
+  position: relative;
+  top: 2%;
+}
+.center{
+  width: 220px;
+  height: 220px;
+  position: absolute;
+  border-radius: 100%;
+  top: 50%;
+  left: 50%;
+  margin: -122px 0 0 -122px;
+  background-color: #ECE7EE;
+  border: 12px solid #333;
+}
+.simon {
+  font-family: '微软雅黑', cursive;
+  color : #222;
+  font-size: 3.2em;
+  margin-top : 35px;
+  font-weight: bold;
+}
+.count{
+  font-family: 'VT323', monospace;
+  color : #DC0D29;
+  padding : 0px;
+  font-size : 2em;
+  width : 50px;
+  background-color: #32050C;
+  position: relative;
+  border: 4px solid #222;
+  border-radius: 10px;
+  margin: auto;
+}
+.round-btn {
+  width : 20px;
+  height : 20px;
+  position: relative;
+  background-color : yellow;
+  border-radius : 100%;
+  border : 4px solid #444;
+  box-shadow : 0px 2px 3px #222;
+  margin:auto;
+  top : -5px;
+}
+.round-btn:active {/*冒号两边不能有空格 否则active无效*/
+  box-shadow: 0 1px 1px #292929;
+  top: -4px;
+}
+.clickable{
+  pointer-events : auto;
+  cursor: pointer;
+}
+/*.unclickable {
+  pointer-events: none;
+}*/
+.led{
+  width:6px;
+  height:6px;
+  background-color: #32050C;
+  border-radius: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin : auto;
+  border: 2px solid #222;
+  top: -18px;
+}
+
+.led-on{
+  background-color: #DC0D29;
+}
+
+.led-off{
+  color:#430710;
+}
+
+.label{
+  color : #222;
+  font-family : 'Oswald',Arial,sans;
+  font-size: 0.7em;
+  margin-top: 5px;
+  text-align: center;
+}
+.display{
+  width: 60px;
+  position: relative;
+  text-align: center;
+}
+.btn-box{
+  width: 50px;
+  position: relative;
+}
+.sw-slot{
+  height: 20px;
+  width: 40px;
+  background-color : #222;
+  position: relative;
+  top: 5px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.switch{
+  height: 16px;
+  width: 16px;
+  border-radius:4px;
+  background-color : #3193DE;
+  position: relative;
+  border: 2px solid #333;
+}
+.sw-on{
+  left: 20px;
+}
+.pa-foot {
+  margin-top: 10px;
+}
+.full-red{
+  background-color: #FC0102;
+}
+
+.yellow.light{/*两个class都存在的时候 才有效*/
+  background-color: #fed93f;
+}
+
+.blue.light{
+  background-color : #1c8cff;
+}
+
+.red.light{
+  background-color : #ff4c4c;
+}
+
+.green.light{
+  background-color : #13ff7c;
+}
+
+@media screen and (max-width: 500px){
+  .pack { 
+    transform: scale(0.6);/*CSS3 transform scale是比例缩放*/
+    transform-origin: 0 0;   
+    left: 50%;
+    margin-left: -142px;
+  }
+}
+    </style>
+
+    
+    
+    
+    
+  </head>
+
+  <body translate="no" >
+
+    <div class="pack">
+  <div class="pack-in">
+    <div class="pa">
+      <div class="inline color green" id="green"></div><div class="inline color red" id="red"></div>
+    </div>
+    <div class="pa">
+      <div class="inline color yellow" id="yellow"></div><div class="inline color blue" id="blue"></div>
+    </div>
+  </div>
+  <div class="center">
+    <h1 class="simon">Simon</h1>
+    <div class="pa">
+      <div class="display inline">
+        <h1 class="count led-off" id="count">--</h1>
+        <h3 class="label">COUNT</h3>
+      </div>
+      <div class="btn-box inline">
+        <div class="round-btn full-red clickable" id="start"></div>
+        <h3 class="label">START</h3>
+      </div>
+      <div class="btn-box inline">
+         <div class="round-btn clickable" id="mode"></div>
+         <h3 class="label">STRICT</h3>
+         <div class="led" id="mode-led"></div>
+      </div>
+  </div>
+  <div class="pa-foot">
+    <h3 class="label inline">OFF</h3>
+     <div class="sw-slot inline">
+       <div class="switch" id="on-off"></div>
+     </div>
+     <h3 class="label inline">ON</h3>
+     </div>
+  </div>  
+</div>
+<script src='//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+    
+    
+        <script>
+      var game = [], squares = ["green", "red", "yellow", "blue"], step = 0, count = 0, speed = 800, strictmode = false;
+
+var disableSquares = function(choice) {
+	for (var y = 0; y < squares.length; y++) {
+  if (choice) {
+      document.getElementById(squares[y]).style.pointerEvents = 'none';
+    } else {
+      document.getElementById(squares[y]).style.pointerEvents = 'auto';
+      document.getElementById(squares[y]).style.cursor = 'pointer';
+    }
+  }
+}
+disableSquares(true);
+
+// 播放声音
+var playSound = function(color) {
+  var noise;
+  var audio = $('<audio autoplay></audio>');
+  var soundurl = "https://www.freecodecamp.cn/images/simonSound";
+
+  if (squares.indexOf(color) > -1) {
+    noise = "1";
+  } else if (color === "3") {
+    noise = "3";//输了的声音
+  } else {
+  	noise = "4";//赢了的声音 其实都差不多
+  }
+    audio.append("<source src='" + soundurl + noise + ".mp3'" + "/>");
+    $("#sound").html(audio);
+}
+
+// 产生一个新的随机序列
+var newRound = function() {
+  disableSquares(true);
+  for (var y = 0; y < squares.length; y++) {
+	  $("#"+squares[y]).removeClass("light");
+	}
+    // 随机产生0---3的数，对应每种颜色，然后将颜色push进game数组
+  game.push(squares[Math.floor(Math.random() * squares.length)]);
+  // 更新count的值
+  currentSteps();
+  // 从第一个按钮开始游戏
+  playButton(game, 0);
+}
+
+// 这个函数更新当前步骤数 当完成20步之后，调用winGame函数
+var currentSteps = function() {
+  step += 1;
+  if (step === 21) {
+    winGame();
+    return;
+  }
+  document.getElementById("count").innerHTML = step;
+}
+
+// 这个函数为每个按钮按下控制动画和声音
+var playButton = function(game, index) {
+  if (step !== 0) {
+    if (index < game.length) {
+      // 越到后面 色块亮起的速度越来越快 增加游戏难度
+      if (step === 5) {
+        speed = 600;
+      }
+      if (step === 9) {
+        speed = 400;
+      }
+      if (step === 13) {
+        speed = 200;
+      }
+      // 如果按钮存在，就播放声音
+      var color = game[index];
+      $("#" + color).addClass("light", speed, function() {
+        playSound(color);
+        $("#" + color).removeClass("light", speed, function() {
+          playButton(game, index + 1); // 如果这个按钮被点击了播放了 立刻播放下一个按钮的声音
+        });
+      });
+    }
+    if (index === game.length) {
+      disableSquares(false);
+    }
+  }
+}
+
+// 点击色块的处理程序
+$(".color").click(function() {
+  var currentId = $(this).attr('id');
+  clickButton(currentId);
+});
+
+var clickButton = function(color) {
+  if (color === game[count]) {//用户所点击的每个色块 都要跟随机序列产生的色块的顺序一致 一一对应 
+    count++;
+    if (count === game.length) {
+      count = 0;
+      newRound();
+    }
+  } else {
+    if (strictmode === true) {
+      loseGame();
+    } else {
+      disableSquares(true);// 此时用户的某个色块点错了 那么防止用户再次点击
+      document.getElementById("count").innerHTML = '!!';
+      for(var i = 0; i < 5; i++) {playSound('4');}
+      setTimeout(function() {
+        document.getElementById("count").innerHTML = step;
+        playButton(game, 0);// 色块重新按照game数组的里面的顺序 亮起来
+        count = 0;
+      }, 1500);
+      clearTimeout();
+    }
+  }
+}
+
+//控制用户鼠标点击的颜色变化和声音
+$(".color").mouseup(function() {
+    var currentId = $(this).attr('id');
+    $("#" + currentId).toggleClass("light");//可用removeClass代替
+})
+  .mousedown(function() {
+    var currentId = $(this).attr('id');
+    $("#" + currentId).toggleClass("light");//下面就用addClass代替  toggleClass是有这个class就删除，没有就增加。
+    playSound(currentId);
+  });
+
+var loseGame = function() {
+  for(var i = 0; i < 5; i++) {playSound('3');}
+  alert("你输了！");
+  resetGame();
+}
+
+var winGame = function() {
+  playSound("4");
+  alert("你赢了！");
+  resetGame();
+}
+
+// 重置游戏。
+var resetGame = function() {
+  game = [];
+  step = 0;
+  count = 0;
+  speed = 800;
+  disableSquares(true);
+  document.getElementById("count").innerHTML = "--";
+}
+
+//开关按钮点击事件
+$(".sw-slot").click(function() {
+  $("#on-off").toggleClass("sw-on");
+  if($('#on-off').hasClass('sw-on') === false){
+    resetGame();
+    $('.count').text('--');
+    $('.count').addClass('led-off');
+    $('#start').off('click');//这两个是关闭on绑定事件的点击方法
+    $('#mode').off('click');
+    document.getElementById("mode-led").style.backgroundColor = '#32050C';
+    strictmode = false;//将严格模式Strict关闭，led小灯也弄黑
+    $("#start").removeClass("start");
+  } else {
+    $('.count').removeClass('led-off');
+    $("#start").click(function() {
+      $("#start").toggleClass("start");
+      if($("#start").hasClass("start") === true) {
+        newRound();
+      }else {
+        resetGame();
+      }
+    });  
+    $('#mode').on('click', function() { 
+      
+      if (strictmode === false) {
+        document.getElementById("mode-led").style.backgroundColor = 'red';//alert()
+        strictmode = true;
+        $("#start").removeClass("start");
+        resetGame();
+       }else {
+         document.getElementById("mode-led").style.backgroundColor = '#32050C';
+         strictmode = false; 
+         $("#start").removeClass("start");
+         resetGame();
+       }
+   });
+  }
+});
+      //# sourceURL=pen.js
+    </script>
+
+    
+    
+  </body>
+</html>
+ 
